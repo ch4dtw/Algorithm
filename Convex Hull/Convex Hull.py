@@ -1,5 +1,6 @@
 import pygame
 import random
+import numpy as np
 
 BLACK = (  0,   0,   0)
 WHITE = (255, 255, 255)
@@ -9,20 +10,20 @@ RED   = (255,   0,   0)
 GRAY  = (192, 192, 192)
 
 going = True
-screen = clock = font =None
+screen = clock = font = None
 dot = []
 start_x = 50
 start_y = 50
 grid = 500
 dot_number = 100
+dotline = []
 
-def main():
-    global going
-    init()
-    while going:
-        check_close()
-        draw()
-        clock.tick(60)
+
+class dots:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+
 
 def init():
     global screen,clock,font
@@ -34,12 +35,6 @@ def init():
     clock = pygame.time.Clock()
     create_dot()
 
-def check_close():
-    global going
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            pygame.quit()
-            quit()
 
 def draw():
     global screen, clock, font
@@ -49,25 +44,45 @@ def draw():
     draw_dot()
     pygame.display.update()
 
+
+def drawline():
+    pass
+
+
 def create_dot():
     global dot, start_x, start_y
     for i in range(dot_number):
-        x = random.randint(0, grid)
-        y = random.randint(0, grid)
-        dot.append([x+start_x,y+start_y])
+        temp = dots()
+        temp.x = random.randint(0, grid)
+        temp.y = random.randint(0, grid)
+        dot.append(temp)
     pass
 
+
 def draw_dot():
+    global dot ,start_x ,start_y
     for i in range(dot_number):
-        pygame.draw.circle(screen, BLACK, [dot[i][0], dot[i][1]], 2)
+        pygame.draw.circle(screen, BLACK, [dot[i].x+start_x, dot[i].y+start_y], 2)
     pass
+
 
 def find_dot():
     global dot,screen
     leftmost = 0
     for i in range(dot_number):
-        if leftmost < dot[i][0]:
-            leftmost = dot[i][0]
+        if leftmost < dot[i].x:
+            leftmost = dot[i].y
+
 
 if __name__ == '__main__':
-    main()
+    init()
+
+    while going:
+        draw()
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif (e.type == pygame.KEYDOWN) and (e.key == pygame.K_RETURN):
+                drawline()
+        clock.tick(60)
